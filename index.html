@@ -306,7 +306,7 @@
             }
 
             // Validate lat/lon values
-            if (!lat || !lon || isNaN(lat) || isNaN(lon)) {
+            if (lat == null || lon == null || isNaN(lat) || isNaN(lon)) {
                 weatherWidget.innerHTML = `<p class="text-red-600 text-sm p-6 text-center">Invalid coordinates. Please select a valid location.</p>`;
                 return;
             }
