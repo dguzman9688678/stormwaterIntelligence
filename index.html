@@ -299,6 +299,18 @@
         }
 
         async function fetchWeatherData(lat, lon) {
+            // Check if running from file:// protocol
+            if (window.location.protocol === 'file:') {
+                weatherWidget.innerHTML = `<p class="text-amber-600 text-sm p-6 text-center">Live weather only works on the published website, not local files.</p>`;
+                return;
+            }
+
+            // Validate lat/lon values
+            if (!lat || !lon || isNaN(lat) || isNaN(lon)) {
+                weatherWidget.innerHTML = `<p class="text-red-600 text-sm p-6 text-center">Invalid coordinates. Please select a valid location.</p>`;
+                return;
+            }
+
             // Open-Meteo API for real-time forecast data
             const WEATHER_URL = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=precipitation,weather_code&current_weather=true&temperature_unit=fahrenheit&forecast_days=1&timezone=auto&timeformat=iso8601`;
 
@@ -345,7 +357,7 @@
                 `;
 
             } catch (error) {
-                weatherWidget.innerHTML = `<p class="text-red-600 text-sm p-6 text-center">Weather Service Error: **Network Access Denied** (Try opening file directly in browser, or on GitHub).</p>`;
+                weatherWidget.innerHTML = `<p class="text-red-600 text-sm p-6 text-center">Weather Service Error: Unable to fetch data. Please check your network connection.</p>`;
             }
         }
         
@@ -580,7 +592,6 @@
 
         // Initial setup
         document.addEventListener('DOMContentLoaded', () => {
-            initMap();
             // Trigger initial geocoding for the default location set in the input field
             geocodeLocation(locationInput.value); 
             // Trigger default view
